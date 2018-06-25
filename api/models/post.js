@@ -4,8 +4,8 @@ const mongoose = require('mongoose');
 const userSchema = mongoose.Schema({
     _id: mongoose.Schema.Types.ObjectId,
     message: String,
-    author: String,
-    isPublic: Boolean,
+    author: { type: String, default: 'Anónimo'},
+    isPublic: { type: Boolean, default: true },
     createdAt: { type: Date, default: Date.now }
 });
 

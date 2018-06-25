@@ -4,8 +4,8 @@ const mongoose = require('mongoose');
 const userSchema = mongoose.Schema({
     _id: mongoose.Schema.Types.ObjectId,
     path: String,
-    likesCount: Number,
-    isPublic: Boolean,
+    likesCount: { type: Number, default: 0},
+    isPublic: { type: Boolean, default: true },
     createdAt: { type: Date, default: Date.now }
 });
 

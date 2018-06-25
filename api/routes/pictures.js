@@ -28,25 +28,25 @@ const upload = multer({storage: storage, limits: {
 
 
 // Create / upload one pic
-// router.post('/', upload.single('image'), (req, res, next) => {
-//     Pics.post(req, res)
-//         .then(pic => {
-//             res.json(pic);
-//         })
-//         .catch(err => {
-//             res.status(500).send(err);
-//         });
-// });
+router.post('/', upload.single('image'), (req, res, next) => {
+    Pics.post(req, res)
+        .then(pic => {
+            res.json(pic);
+        })
+        .catch(err => {
+            res.status(500).send(err);
+        });
+});
 
 // Get all pics
-// router.get('/', (req, res, next) => {
-//     Pics.findAll(req, res)
-//         .then(pics => {
-//             res.json(pics);
-//         })
-//         .catch(err => {
-//             res.status(500).send(err);
-//         });
-// });
+router.get('/', (req, res, next) => {
+    Pics.findAll(req, res)
+        .then(pics => {
+            res.json(pics);
+        })
+        .catch(err => {
+            res.status(500).send(err);
+        });
+});
 
 module.exports = router;
