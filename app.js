@@ -12,7 +12,7 @@ const config = require('./api/config/config');
 mongoose.connect(config.mongo.connectionString);
 
 // access to /uploads directory
-app.use('/uploads', express.static('uploads'));
+app.use('/uploads', express.static('./uploads'));
 app.use(bodyParser.json());
 
 // custom Routes

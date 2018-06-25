@@ -1,5 +1,5 @@
 
-const mongoose = require('mongoose')
+const mongoose = require('mongoose');
 const Pic = new require('../models/picture');
 
 // create and save a pic
