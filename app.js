@@ -3,13 +3,16 @@ const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
-
+const cors = require('cors');
 const postRoutes = require('./api/routes/posts');
 const picRoutes = require('./api/routes/pictures');
 const config = require('./api/config/config');
 
 // connection string to MongoDB
 mongoose.connect(config.mongo.connectionString);
+
+// Allow CORS
+app.use(cors({origin: '*'}));
 
 // access to /uploads directory
 app.use('/uploads', express.static('./uploads'));
