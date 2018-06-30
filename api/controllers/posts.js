@@ -2,6 +2,9 @@
 const mongoose = require('mongoose')
 const Post = new require('../models/post');
 
+// TODO review "batch" size
+const batchSize = 2;
+
 // create a Post
 exports.post = (req, res) => {
     const data = req.body ;
@@ -20,9 +23,27 @@ exports.post = (req, res) => {
         });
 };
 
-// return all Posts
+// return all Posts (with server-side pagination)
 exports.findAll = (req, res) => {
     return Post.find()
+        .then(posts => {
+            return posts;
+        })
+        .catch(err => {
+            res.status(500).send(err);
+        });
+};
+
+// return all Posts (with server-side pagination)
+exports.findAllPagination = (req, res) => {
+    const skip = batchSize *(req.params.pageNum - 1);
+    const sort = { createdAt: -1 };
+    let query = {};
+    query.skip = skip;
+    query.limit = batchSize;
+    query.sort = sort;
+
+    return Post.find({}, {}, query)
         .then(posts => {
             return posts;
         })

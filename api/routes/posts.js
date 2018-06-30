@@ -23,6 +23,16 @@ router.get('/', (req, res, next) => {
         })
 })
 
+router.get('/:pageNum', (req, res, next) => {
+    Post.findAllPagination(req, res)
+        .then(posts => {
+            res.json(posts);
+        })
+        .catch(err => {
+            res.status(500).send(err);
+        })
+})
+
 router.get('/:id', (req, res, next) => {
     Post.findOne(req, res)
         .then(post => {

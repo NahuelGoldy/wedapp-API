@@ -49,4 +49,15 @@ router.get('/', (req, res, next) => {
         });
 });
 
+// Get all pics (with pagination)
+router.get('/:pageNumb', (req, res, next) => {
+    Pics.findAllPagination(req, res)
+        .then(pics => {
+            res.json(pics);
+        })
+        .catch(err => {
+            res.status(500).send(err);
+        });
+});
+
 module.exports = router;
