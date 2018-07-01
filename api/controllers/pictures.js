@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const Pic = new require('../models/picture');
 
 // TODO review "batch" size
-const batchSize = 2;
+const batchSize = 12;
 
 // create and save a pic
 exports.post = (req, res) => {
@@ -45,6 +45,20 @@ exports.findAllPagination = (req, res) => {
     return Pic.find({}, {}, query)
         .then(pics => {
             return pics;
+        })
+        .catch(err => {
+            res.status(500).send(err);
+        });
+};
+
+// Find and update likeCount of a given Pic
+exports.like = (req, res) => {
+    let query = {};
+    query.$inc = {'likesCount': 1};
+
+    return Pic.findOneAndUpdate({_id: req.body._id}, query, {new: true})
+        .then(pic => {
+            return pic;
         })
         .catch(err => {
             res.status(500).send(err);

@@ -3,7 +3,7 @@ const mongoose = require('mongoose')
 const Post = new require('../models/post');
 
 // TODO review "batch" size
-const batchSize = 2;
+const batchSize = 10;
 
 // create a Post
 exports.post = (req, res) => {

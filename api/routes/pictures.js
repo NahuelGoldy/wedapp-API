@@ -60,4 +60,15 @@ router.get('/:pageNumb', (req, res, next) => {
         });
 });
 
+// Like pic
+router.post('/like', (req, res, next) => {
+    Pics.like(req, res)
+        .then(pic => {
+            res.json(pic)
+        })
+        .catch(err => {
+            res.status(500).send(err);
+        });
+});
+
 module.exports = router;
