@@ -25,7 +25,7 @@ exports.post = (req, res) => {
 
 // return all Posts (with server-side pagination)
 exports.findAll = (req, res) => {
-    return Post.find()
+    return Post.find({isPublic: true})
         .then(posts => {
             return posts;
         })
@@ -43,7 +43,7 @@ exports.findAllPagination = (req, res) => {
     query.limit = batchSize;
     query.sort = sort;
 
-    return Post.find({}, {}, query)
+    return Post.find({isPublic: true}, {}, query)
         .then(posts => {
             return posts;
         })
