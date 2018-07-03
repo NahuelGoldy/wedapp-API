@@ -24,7 +24,7 @@ exports.post = (req, res) => {
 
 // return all Pics
 exports.findAll = (req, res) => {
-    return Pic.find()
+    return Pic.find({isPublic: true})
         .then(pics => {
             return pics;
         })
@@ -42,7 +42,7 @@ exports.findAllPagination = (req, res) => {
     query.limit = batchSize;
     query.sort = sort;
 
-    return Pic.find({}, {}, query)
+    return Pic.find({isPublic: true}, {}, query)
         .then(pics => {
             return pics;
         })
