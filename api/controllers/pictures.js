@@ -1,7 +1,6 @@
 
 const mongoose = require('mongoose');
 const Pic = new require('../models/picture');
-const request = require('request');
 const axios = require('axios');
 
 // TODO review "batch" size
@@ -29,18 +28,10 @@ exports.post = (req, res) => {
         method: 'POST'
     };
 
-    // let fb_response = {};
-    // Send POST to Firebase storage to save just the image
-    // request(options, (err, response, body) => {
-    //     if (err) console.log('Request err: ', err); // TODO improve error handling (retry strategy?)
-    //     fb_response = JSON.parse(body);
-    // });
-
+    // POST the image alone to Firebase
+    // When response comes back, persist data to Mongo
     return axios.post(options.uri, options.formData)
         .then(response => {
-            // console.log(response.data);
-            const fb_response = response.data;
-
             Pic.create({
                 _id: mongoose.Types.ObjectId(),
                 path: fb_base_download_url + response.data.bucket + '/o/' + response.data.name + '?alt=media&token=' + response.data.downloadTokens,
@@ -92,6 +83,17 @@ exports.like = (req, res) => {
     return Pic.findOneAndUpdate({_id: req.body._id}, query, {new: true})
         .then(pic => {
             return pic;
+        })
+        .catch(err => {
+            res.status(500).send(err);
+        });
+};
+
+// Delete all
+exports.deleteOne = (id, res) => {
+    return Pic.findOneAndRemove({_id: id}).exec()
+        .then(pics => {
+            return pics;
         })
         .catch(err => {
             res.status(500).send(err);
