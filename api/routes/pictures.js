@@ -21,10 +21,14 @@ const fileFilter = (req, file, cb) => {
         cb(null, false);
     }
 };
-const upload = multer({storage: storage, limits: {
-    // Max size = 5MB
-    fileSize: 1024 * 1024 * 5
-}});
+const upload = multer({
+    // storage: storage,
+    storage: multer.memoryStorage(),
+    limits: {
+        // Max size = 5MB
+        fileSize: 1024 * 1024 * 5
+    }
+});
 
 
 // Create / upload one pic
