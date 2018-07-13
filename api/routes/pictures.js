@@ -75,4 +75,20 @@ router.post('/like', (req, res, next) => {
         });
 });
 
+// Delete all pics (findAll + findOneAndRemove)
+router.post('/delete', (req, res, next) => {
+    Pics.findAll(req, res)
+        .then(pics => {
+            pics.forEach(p => {
+                Pics.deleteOne(p._id, res)
+                    .then(x => {
+                        return x;
+                    });
+            });
+        })
+        .catch(err => {
+            res.status(500).send(err);
+        });
+});
+
 module.exports = router;
