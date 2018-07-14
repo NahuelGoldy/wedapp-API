@@ -33,9 +33,12 @@ const upload = multer({
 
 // Create / upload one pic
 router.post('/', upload.single('image'), (req, res, next) => {
-    Pics.post(req, res)
-        .then(pic => {
-            res.json(pic);
+    Pics.saveImage(req)
+        .then(fb => {
+            Pics.post(req, res, fb)
+                .then(pic => {
+                    res.json(pic);
+                });
         })
         .catch(err => {
             res.status(500).send(err);

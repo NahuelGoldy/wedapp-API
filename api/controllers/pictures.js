@@ -1,45 +1,24 @@
 
 const mongoose = require('mongoose');
 const Pic = new require('../models/picture');
-const axios = require('axios');
+const request = require('request');
+const config = require('./api/config/config');
 
 // TODO review "batch" size
 const batchSize = 12;
 
 // create and save a pic
-exports.post = (req, res) => {
+exports.post = (req, res, fb) => {
     const data = req.body;
-    const img = req.file;
-    const img_name = (new Date().toISOString().split('.')[0]).replace(/:/g, '.') + '.' + req.file.originalname.split('.').pop();
+    const fb_response = JSON.parse(fb);
 
-    const firebase_url = 'https://firebasestorage.googleapis.com/v0/b/wedapp-1529785854543.appspot.com/o?uploadType=media&name=' + img_name;
-    let fb_base_download_url = 'https://firebasestorage.googleapis.com/v0/b/';
-    const formData = {
-        image: {
-            value: img.buffer,
-            options: {
-                filename: img_name
-            }
-        }
-    };
-    const options = {
-        uri: firebase_url,
-        formData: formData,
-        method: 'POST'
-    };
-
-    // POST the image alone to Firebase
-    // When response comes back, persist data to Mongo
-    return axios.post(options.uri, options.formData)
-        .then(response => {
-            Pic.create({
-                _id: mongoose.Types.ObjectId(),
-                path: fb_base_download_url + response.data.bucket + '/o/' + response.data.name + '?alt=media&token=' + response.data.downloadTokens,
-                isPublic: data.isPublic
-            })
-                .then(pic => {
-                    return pic;
-                })
+    return Pic.create({
+        _id: mongoose.Types.ObjectId(),
+        path: config.firebase.url_download + fb_response.bucket + '/o/' + fb_response.name + '?alt=media&token=' + fb_response.downloadTokens,
+        isPublic: data.isPublic
+    })
+        .then(pic => {
+            return pic;
         })
         .catch(err => {
             return err;
@@ -98,4 +77,34 @@ exports.deleteOne = (id, res) => {
         .catch(err => {
             res.status(500).send(err);
         });
+};
+
+// Save image to Firebase
+exports.saveImage = (req) => {
+    const img = req.file;
+    const img_name = (new Date().toISOString().split('.')[0]).replace(/:/g, '.') + '.' + req.file.originalname.split('.').pop();
+    const firebase_url = config.firebase.url_upload + img_name;
+    const formData = {
+        image: {
+            value: img.buffer,
+            options: {
+                filename: img_name
+            }
+        }
+    };
+    const options = {
+        uri: firebase_url,
+        formData: formData,
+        method: 'POST'
+    };
+
+    return new Promise((resolve, reject) => {
+        request(options, (err, response, body) => {
+            if (err) {
+                console.log('Request err: ', err);
+                reject(err);
+            } // TODO improve error handling (retry strategy?)
+            resolve(body);
+        });
+    });
 };
