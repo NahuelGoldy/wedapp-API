@@ -2,7 +2,7 @@
 const mongoose = require('mongoose');
 const Pic = new require('../models/picture');
 const request = require('request');
-const config = require('./api/config/config');
+const config = require('../config/config');
 
 // TODO review "batch" size
 const batchSize = 12;
@@ -14,7 +14,7 @@ exports.post = (req, res, fb) => {
 
     return Pic.create({
         _id: mongoose.Types.ObjectId(),
-        path: config.firebase.url_download + fb_response.bucket + '/o/' + fb_response.name + '?alt=media&token=' + fb_response.downloadTokens,
+        path: config.firebase.url + fb_response.bucket + '/o/' + fb_response.name + '?alt=media&token=' + fb_response.downloadTokens,
         isPublic: data.isPublic
     })
         .then(pic => {
@@ -83,7 +83,7 @@ exports.deleteOne = (id, res) => {
 exports.saveImage = (req) => {
     const img = req.file;
     const img_name = (new Date().toISOString().split('.')[0]).replace(/:/g, '.') + '.' + req.file.originalname.split('.').pop();
-    const firebase_url = config.firebase.url_upload + img_name;
+    const firebase_url = config.firebase.url + config.firebase.bucket + config.firebase.upload_params + img_name;
     const formData = {
         image: {
             value: img.buffer,
